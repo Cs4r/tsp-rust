@@ -1,5 +1,5 @@
 [package]
-edition = "2023"
+edition = "2021"
 name = "tsp-rust"
 version = "1.0.0"
 
