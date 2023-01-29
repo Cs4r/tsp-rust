@@ -1,0 +1,6 @@
+[package]
+edition = "2023"
+name = "tsp-rust"
+version = "1.0.0"
+
+[dependencies]
