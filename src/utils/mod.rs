@@ -1,7 +1,9 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
+use rand::{seq::SliceRandom, SeedableRng};
+use rand_chacha::ChaChaRng;
 
-struct Point {
+struct Coordinate {
     x: f64,
     y: f64,
 }
@@ -24,12 +26,12 @@ pub fn read_distance_matrix(path: &str) -> Vec<Vec<f64>> {
     distance_matrix
 }
 
-fn read_coordinates_vector(path: &str) -> Vec<Point> {
+fn read_coordinates_vector(path: &str) -> Vec<Coordinate> {
     let file = File::open(path).unwrap();
     let reader = BufReader::new(file);
 
     let mut problem_size = 0;
-    let mut coordinates: Vec<Point> = Vec::new();
+    let mut coordinates: Vec<Coordinate> = Vec::new();
 
     for (line_number, line) in reader.lines().enumerate() {
         let line = line.unwrap();
@@ -43,7 +45,7 @@ fn read_coordinates_vector(path: &str) -> Vec<Point> {
             let x = str_to_f64(parts[1]);
             let y = str_to_f64(parts[2]);
 
-            coordinates.push(Point { x, y });
+            coordinates.push(Coordinate { x, y });
         }
     }
     coordinates
@@ -59,7 +61,7 @@ fn square_matrix_of_zeros(problem_size: usize) -> Vec<Vec<f64>> {
     distance_matrix
 }
 
-fn calculate_euclidean_distance(a: &Point, b: &Point) -> f64 {
+fn calculate_euclidean_distance(a: &Coordinate, b: &Coordinate) -> f64 {
     let diff_coord_x = a.x - b.x;
     let diff_coord_y = a.y - b.y;
 
@@ -87,3 +89,21 @@ fn to_parts<'a>(line: &'a String, separator: &'a str) -> Vec<&'a str> {
     line.split(separator).map(|s| s.trim()).collect()
 }
 
+
+pub fn generate_random_permutation(seed: u64, problem_size: usize) -> Vec<u16>{
+
+    let mut row: Vec<u16> = Vec::with_capacity(problem_size);
+
+    for i in 0..problem_size {
+        row.push(i as u16);
+    }
+
+    let mut rng: ChaChaRng = ChaChaRng::seed_from_u64(seed);
+
+    row.shuffle(&mut rng);
+
+    println!("{:?}", row);
+
+    row
+
+}

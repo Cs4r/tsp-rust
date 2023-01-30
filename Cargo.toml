@@ -4,3 +4,6 @@ name = "tsp-rust"
 version = "1.0.0"
 
 [dependencies]
+rand_chacha = "0.3.1"
+rand = "0.8.5"
+
