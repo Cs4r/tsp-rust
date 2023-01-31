@@ -1,11 +1,36 @@
 use std::fs::File;
 use std::io::{BufRead, BufReader};
-use rand::{seq::SliceRandom, SeedableRng};
+use rand::{seq::SliceRandom};
 use rand_chacha::ChaChaRng;
 
 struct Coordinate {
     x: f64,
     y: f64,
+}
+
+pub fn generate_random_permutation(rng: &mut ChaChaRng, problem_size: usize) -> Vec<u32> {
+    let mut row: Vec<u32> = Vec::with_capacity(problem_size);
+
+    for i in 0..problem_size {
+        row.push(i as u32);
+    }
+
+    row.shuffle(rng);
+
+    row
+}
+
+pub fn compute_cost(path: &Vec<u32>, distance_matrix: &Vec<Vec<f64>>) -> f64 {
+    let mut cost: f64 = 0.0;
+    let problem_size = path.len();
+
+    for _i in 0..problem_size - 1 {
+        cost += distance_matrix[path[_i] as usize][path[_i + 1] as usize];
+    }
+
+    cost += distance_matrix[path[problem_size - 1] as usize][path[0] as usize];
+
+    cost
 }
 
 pub fn read_distance_matrix(path: &str) -> Vec<Vec<f64>> {
@@ -87,23 +112,4 @@ fn str_to_f64(part: &str) -> f64 {
 
 fn to_parts<'a>(line: &'a String, separator: &'a str) -> Vec<&'a str> {
     line.split(separator).map(|s| s.trim()).collect()
-}
-
-
-pub fn generate_random_permutation(seed: u64, problem_size: usize) -> Vec<u16>{
-
-    let mut row: Vec<u16> = Vec::with_capacity(problem_size);
-
-    for i in 0..problem_size {
-        row.push(i as u16);
-    }
-
-    let mut rng: ChaChaRng = ChaChaRng::seed_from_u64(seed);
-
-    row.shuffle(&mut rng);
-
-    println!("{:?}", row);
-
-    row
-
 }

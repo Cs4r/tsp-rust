@@ -1,22 +1,19 @@
 mod utils;
+mod algs;
+
+
 use crate::utils::read_distance_matrix;
-use crate::utils::generate_random_permutation;
+use crate::algs::random_search;
+use rand::{SeedableRng};
+use rand_chacha::ChaChaRng;
 
 
 fn main() {
     let distance_matrix = read_distance_matrix("./resources/berlin52.tsp");
 
-    println!("{:?}", distance_matrix);
+    let mut rng: ChaChaRng = ChaChaRng::seed_from_u64(288);
 
-    random_search(100, 288, &distance_matrix);
-
-    ()
-}
-
-fn random_search(iterations: u32, seed: u64, distance_matrix: &Vec<Vec<f64>>) -> () {
-
-    let mut path = generate_random_permutation(seed, distance_matrix[0].len());
+    random_search(100, &mut rng, &distance_matrix);
 
     ()
 }
-
