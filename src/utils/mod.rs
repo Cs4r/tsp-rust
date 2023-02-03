@@ -33,6 +33,29 @@ pub fn compute_cost(path: &Vec<u32>, distance_matrix: &Vec<Vec<f64>>) -> f64 {
     cost
 }
 
+pub fn recompute_cost(path: &Vec<u32>, cost: f64, distance_matrix: &Vec<Vec<f64>>, i: usize, j: usize) -> f64 {
+    let last = path.len() - 1;
+    let i_minus1 = if i == 0 { last } else { i - 1 };
+    let i_plus1 = if i == last { 0 } else { i + 1 };
+    let j_minus1 = if j == 0 { last } else { j - 1 };
+    let j_plus1 = if j == last { 0 } else { j + 1 };
+    let new_cost;
+
+    if j_plus1 == i || i_minus1 == j {
+        new_cost = cost - distance_matrix[path[j_minus1] as usize][path[i] as usize] - distance_matrix[path[j] as usize][path[i_plus1] as usize]
+            + distance_matrix[path[j_minus1] as usize][path[j] as usize] + distance_matrix[path[i] as usize][path[i_plus1] as usize];
+    } else if j != i_plus1 {
+        new_cost = cost - distance_matrix[path[i_minus1] as usize][path[j] as usize] - distance_matrix[path[j] as usize][path[i_plus1] as usize]
+            - distance_matrix[path[j_minus1] as usize][path[i] as usize] - distance_matrix[path[i] as usize][path[j_plus1] as usize] + distance_matrix[path[i_minus1] as usize][path[i] as usize]
+            + distance_matrix[path[i] as usize][path[i_plus1] as usize] + distance_matrix[path[j_minus1] as usize][path[j] as usize] + distance_matrix[path[j] as usize][path[j_plus1] as usize];
+    } else {
+        new_cost = cost - distance_matrix[path[i_minus1] as usize][path[j] as usize] - distance_matrix[path[i] as usize][path[j_plus1] as usize]
+            + distance_matrix[path[i_minus1] as usize][path[i] as usize] + distance_matrix[path[j] as usize][path[j_plus1] as usize];
+    }
+
+    new_cost
+}
+
 pub fn read_distance_matrix(path: &str) -> Vec<Vec<f64>> {
     let coordinates = read_coordinates_vector(path);
     let problem_size = coordinates.len();
