@@ -3,4 +3,8 @@ name = "tsp-rust"
 version = "0.1.0"
 edition = "2024"
 
+[[bin]]
+name = "random_search"
+path = "bin/random_search.rs"
+
 [dependencies]
