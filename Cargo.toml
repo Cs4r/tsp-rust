@@ -7,4 +7,6 @@ edition = "2024"
 name = "random_search"
 path = "bin/random_search.rs"
 
-[dependencies]
+[dependencies] # TODO: update version numbers
+rand = "0.8"
+rand_chacha = "0.3"
