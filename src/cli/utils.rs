@@ -69,13 +69,13 @@ fn to_parts<'a>(line: &'a str, separator: &'a str) -> Vec<&'a str> {
     line.split(separator).map(|s| s.trim()).collect()
 }
 
-pub fn validate_cli_arguments(args: &[String], algorithm: &str, seed_optional: bool) {
+pub fn validate_cli_arguments(args: &[String], algorithm: &str, seed_required: bool) {
     let program_name = args.get(0).map_or("program", String::as_str);
-    let (header, usage) = generate_cli_help_text(program_name, algorithm, seed_optional);
+    let (header, usage) = generate_cli_help_text(program_name, algorithm, seed_required);
 
     // Check correct number of arguments based on whether seed is optional
-    if (seed_optional && !(args.len() == 2 || args.len() == 3))
-        || (!seed_optional && args.len() != 3)
+    if (seed_required && args.len() != 3)
+        || (!seed_required && !(args.len() == 2 || args.len() == 3))
     {
         eprintln!(
             "{}ERROR: Incorrect number of arguments.\n\n{}",
@@ -93,7 +93,7 @@ pub fn validate_cli_arguments(args: &[String], algorithm: &str, seed_optional: b
         process::exit(1);
     }
 
-    if !seed_optional || args.len() == 3 {
+    if seed_required || args.len() == 3 {
         if args.len() < 3 {
             eprintln!("{}ERROR: Seed argument missing.\n\n{}", header, usage);
             process::exit(1);
@@ -120,7 +120,7 @@ pub fn validate_cli_arguments(args: &[String], algorithm: &str, seed_optional: b
 fn generate_cli_help_text(
     program_name: &str,
     algorithm: &str,
-    seed_optional: bool,
+    seed_required: bool,
 ) -> (String, String) {
     let header = format!(
         "
@@ -138,10 +138,10 @@ fn generate_cli_help_text(
         algorithm
     );
 
-    let seed_arg = if seed_optional {
-        "[seed_number]"
-    } else {
+    let seed_arg = if seed_required {
         "<seed_number>"
+    } else {
+        "[seed_number]"
     };
 
     let mut usage = format!(
