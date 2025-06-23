@@ -8,7 +8,7 @@ fn main() {
 
     let distance_matrix = read_distance_matrix(&args[1]);
 
-    let best_cost = deterministic_greedy(distance_matrix);
+    let best_cost = deterministic_greedy(&distance_matrix);
 
     println!("Best cost: {}", best_cost);
 }
