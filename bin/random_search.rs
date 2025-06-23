@@ -7,7 +7,7 @@ use tsp_rust::cli::utils::{
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    validate_cli_arguments(&args, "Random Search");
+    validate_cli_arguments(&args, "Random Search", false);
 
     const NUM_REPETITIONS: usize = 2000;
     let distance_matrix = read_distance_matrix(&args[1]);

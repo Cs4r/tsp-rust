@@ -69,11 +69,14 @@ fn to_parts<'a>(line: &'a str, separator: &'a str) -> Vec<&'a str> {
     line.split(separator).map(|s| s.trim()).collect()
 }
 
-pub fn validate_cli_arguments(args: &[String], algorithm: &str) {
+pub fn validate_cli_arguments(args: &[String], algorithm: &str, seed_optional: bool) {
     let program_name = args.get(0).map_or("program", String::as_str);
-    let (header, usage) = generate_cli_help_text(program_name, algorithm);
+    let (header, usage) = generate_cli_help_text(program_name, algorithm, seed_optional);
 
-    if args.len() != 3 {
+    // Check correct number of arguments based on whether seed is optional
+    if (seed_optional && !(args.len() == 2 || args.len() == 3))
+        || (!seed_optional && args.len() != 3)
+    {
         eprintln!(
             "{}ERROR: Incorrect number of arguments.\n\n{}",
             header, usage
@@ -81,24 +84,7 @@ pub fn validate_cli_arguments(args: &[String], algorithm: &str) {
         process::exit(1);
     }
 
-    let seed_index: usize = args[2].parse().unwrap_or_else(|_| {
-        eprintln!(
-            "{}ERROR: The second argument must be a number between 1 and 10.\n\n{}",
-            header, usage
-        );
-        process::exit(1);
-    });
-
-    if seed_index < 1 || seed_index > crate::algs::utils::SEEDS.len() {
-        eprintln!(
-            "{}ERROR: Seed number must be between 1 and 10 (inclusive).\n\n{}",
-            header, usage
-        );
-        process::exit(1);
-    }
-
     let data_file_path = &args[1];
-
     if !Path::new(data_file_path).exists() {
         eprintln!(
             "{}ERROR: Failed to open data file '{}': File does not exist\nCheck if the file exists and is readable.",
@@ -106,9 +92,36 @@ pub fn validate_cli_arguments(args: &[String], algorithm: &str) {
         );
         process::exit(1);
     }
+
+    if !seed_optional || args.len() == 3 {
+        if args.len() < 3 {
+            eprintln!("{}ERROR: Seed argument missing.\n\n{}", header, usage);
+            process::exit(1);
+        }
+
+        let seed_index: usize = args[2].parse().unwrap_or_else(|_| {
+            eprintln!(
+                "{}ERROR: The seed argument must be a number between 1 and 10.\n\n{}",
+                header, usage
+            );
+            process::exit(1);
+        });
+
+        if seed_index < 1 || seed_index > crate::algs::utils::SEEDS.len() {
+            eprintln!(
+                "{}ERROR: Seed number must be between 1 and 10 (inclusive).\n\n{}",
+                header, usage
+            );
+            process::exit(1);
+        }
+    }
 }
 
-fn generate_cli_help_text(program_name: &str, algorithm: &str) -> (String, String) {
+fn generate_cli_help_text(
+    program_name: &str,
+    algorithm: &str,
+    seed_optional: bool,
+) -> (String, String) {
     let header = format!(
         "
 #######################################
@@ -125,11 +138,17 @@ fn generate_cli_help_text(program_name: &str, algorithm: &str) -> (String, Strin
         algorithm
     );
 
+    let seed_arg = if seed_optional {
+        "[seed_number]"
+    } else {
+        "<seed_number>"
+    };
+
     let mut usage = format!(
-        "Execution: {} <data_file> <seed_number>\n\
-     <data_file>: .tsp file from TSPLIB95\n\
-     <seed_number>:  Index   Seed\n",
-        program_name
+        "Execution: {} <data_file> {}\n\
+         <data_file>: .tsp file from TSPLIB95\n\
+         {}:  Index   Seed\n",
+        program_name, seed_arg, seed_arg
     );
 
     for (i, seed) in crate::algs::utils::SEEDS.iter().enumerate() {

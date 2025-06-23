@@ -4,7 +4,7 @@ use tsp_rust::cli::utils::{read_distance_matrix, validate_cli_arguments};
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    validate_cli_arguments(&args, "Deterministic Greedy");
+    validate_cli_arguments(&args, "Deterministic Greedy", true);
 
     let distance_matrix = read_distance_matrix(&args[1]);
 
