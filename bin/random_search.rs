@@ -16,7 +16,7 @@ fn main() {
     let seed = &args[2];
     let mut rng = create_rng_from_seed_string(seed);
 
-    let best_cost = random_search(&mut rng, distance_matrix, iterations);
+    let best_cost = random_search(&mut rng, &distance_matrix, iterations);
     
     println!("Best cost: {}", best_cost);
 }
