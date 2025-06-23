@@ -1,7 +1,7 @@
 use std::env;
-use tsp_rust::utils::{
-    compute_cost, create_rng_from_seed_string, generate_random_permutation, get_problem_size
-    , read_distance_matrix, validate_cli_arguments,
+use tsp_rust::algs::utils::{compute_cost, create_rng_from_seed_string, generate_random_permutation, get_problem_size};
+use tsp_rust::cli::utils::{
+    read_distance_matrix, validate_cli_arguments,
 };
 
 fn main() {
