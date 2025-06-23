@@ -11,6 +11,10 @@ path = "bin/random_search.rs"
 name = "local_search"
 path = "bin/local_search.rs"
 
+[[bin]]
+name = "deterministic_greedy"
+path = "bin/deterministic_greedy.rs"
+
 [dependencies] # TODO: update version numbers
 rand = "0.8"
 rand_chacha = "0.3"
