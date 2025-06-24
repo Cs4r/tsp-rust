@@ -1,7 +1,7 @@
-use crate::algs::utils::{compute_cost, generate_random_permutation, get_problem_size};
+use crate::algs::utils::{compute_cost, generate_random_permutation, get_problem_size, DistanceMatrix};
 use rand_chacha::ChaCha8Rng;
 
-pub fn random_search(rng: &mut ChaCha8Rng, distance_matrix: &Vec<Vec<f64>>, iterations: usize) -> f64 {
+pub fn random_search(rng: &mut ChaCha8Rng, distance_matrix: &DistanceMatrix, iterations: usize) -> f64 {
 
     let problem_size = get_problem_size(&distance_matrix);
     let mut best_path = generate_random_permutation(rng, problem_size);

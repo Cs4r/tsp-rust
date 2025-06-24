@@ -1,7 +1,7 @@
-use crate::algs::utils::get_problem_size;
+use crate::algs::utils::{get_problem_size, DistanceMatrix, Path};
 use std::collections::BTreeSet;
 
-pub fn deterministic_greedy(distance_matrix: &Vec<Vec<f64>>) -> f64 {
+pub fn deterministic_greedy(distance_matrix: &DistanceMatrix) -> f64 {
     let problem_size = get_problem_size(&distance_matrix);
 
     // Initialize the minimum total distance from city 0 to others
@@ -21,7 +21,7 @@ pub fn deterministic_greedy(distance_matrix: &Vec<Vec<f64>>) -> f64 {
 
     // Initialize the set of cities to visit and the tour vector
     let mut cities_to_visit: BTreeSet<u32> = (0..problem_size).map(|x| x as u32).collect();
-    let mut tour: Vec<u32> = vec![0; problem_size];
+    let mut tour: Path = vec![0; problem_size];
 
     // Start the tour from the most central city
     tour[0] = most_central_city;

@@ -2,6 +2,9 @@ use rand::seq::SliceRandom;
 use rand::SeedableRng;
 use rand_chacha::ChaCha8Rng;
 
+pub type DistanceMatrix = Vec<Vec<f64>>;
+pub type Path = Vec<u32>;
+
 pub const SEEDS: [u64; 10] = [
     12345678, 23456781, 34567812, 45678123, 56781234, 67812345, 78123456, 81234567, 87654321,
     18765432,
@@ -20,19 +23,19 @@ pub fn create_rng_from_seed_string(seed_index_str: &str) -> ChaCha8Rng {
     ChaCha8Rng::from_seed(seed_bytes)
 }
 
-pub fn get_problem_size(matrix: &Vec<Vec<f64>>) -> usize {
+pub fn get_problem_size(matrix: &DistanceMatrix) -> usize {
     matrix.len()
 }
 
-pub fn generate_random_permutation(rng: &mut ChaCha8Rng, problem_size: usize) -> Vec<u32> {
-    let mut v: Vec<u32> = (0..problem_size).map(|i| i as u32).collect();
+pub fn generate_random_permutation(rng: &mut ChaCha8Rng, problem_size: usize) -> Path {
+    let mut v: Path = (0..problem_size).map(|i| i as u32).collect();
 
     v.shuffle(rng);
 
     v
 }
 
-pub fn compute_cost(path: &Vec<u32>, distance_matrix: &Vec<Vec<f64>>) -> f64 {
+pub fn compute_cost(path: &Path, distance_matrix: &DistanceMatrix) -> f64 {
     let mut cost: f64 = 0.0;
     let problem_size = path.len();
 

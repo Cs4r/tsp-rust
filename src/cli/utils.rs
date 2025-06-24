@@ -2,13 +2,14 @@ use std::fs::File;
 use std::io::{BufRead, BufReader};
 use std::path::Path;
 use std::process;
+use crate::algs::utils::DistanceMatrix;
 
 struct Coordinate {
     x: f64,
     y: f64,
 }
 
-pub fn read_distance_matrix(path: &str) -> Vec<Vec<f64>> {
+pub fn read_distance_matrix(path: &str) -> DistanceMatrix {
     let coordinates = read_coordinates(path);
     let problem_size = coordinates.len();
 
